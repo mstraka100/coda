@@ -204,11 +204,11 @@ module Make (Commands : Coda_commands.Intf) = struct
                 ~args:Arg.[]
                 ~resolve:(fun _ account ->
                   Stringable.public_key account.Account.Poly.delegate )
-            ; field "participated" ~typ:(non_null bool)
+            ; field "voting_for" ~typ:(non_null string)
                 ~doc:"TODO, not sure what this is"
                 ~args:Arg.[]
-                ~resolve:(fun _ account -> account.Account.Poly.participated)
-            ] )
+                ~resolve:(fun _ account ->
+                  State_hash.to_bytes account.Account.Poly.voting_for ) ] )
     end
 
     let snark_worker =
@@ -284,7 +284,6 @@ module Make (Commands : Coda_commands.Intf) = struct
               ; balance
               ; receipt_chain_hash
               ; delegate
-              ; participated
               ; voting_for }
          ->
         { Account.Poly.public_key
@@ -293,7 +292,6 @@ module Make (Commands : Coda_commands.Intf) = struct
         ; balance=
             {Types.Wallet.AnnotatedBalance.total= balance; unknown= balance}
         ; receipt_chain_hash
-        ; participated
         ; voting_for } )
 
   module Queries = struct
